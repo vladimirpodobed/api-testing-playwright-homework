@@ -83,8 +83,6 @@ test('post product with correct data should receive code 201', async ({ request 
   expect(typeof responseBody.price).toBe('number')
 }) // Завершаем описание теста
 
-
-
 test('post product with correct mandatory data and quantity should receive code 201', async ({
   request,
 }) => {
