@@ -50,32 +50,38 @@ test('get product with invalid id should receive code 400', async ({ request }) 
   expect(statusCode).toBe(StatusCodes.BAD_REQUEST)
 })
 
+// Создаём тест: проверяем, что при отправке корректных данных сервер возвращает статус 201 (Created)
 test('post product with correct data should receive code 201', async ({ request }) => {
-  // prepare request body with only mandatory fields
-  const requestBody = {
-    name: 'Orange',
-    category: 'Fruit',
-    price: 2.39,
-  }
-  // Send a POST request to the server
+  // Создаём объект с данными продукта с помощью класса ProductDto
+  const requestBody = new ProductDto('Orange', 'Fruit', 2.39, 0)
+
+  // Отправляем POST-запрос на сервер, чтобы создать новый продукт
   const response = await request.post('https://shop.tl-academy.ee/api/products', {
-    data: requestBody,
-    ignoreHTTPSErrors: true,
-  })
-  // parse raw response body to json
+    data: requestBody, // Передаём данные продукта в теле HTTP-запроса
+    ignoreHTTPSErrors: true, // Разрешаем запрос, даже если есть ошибки HTTPS-сертификата
+  }) // Завершаем отправку запроса и сохраняем ответ сервера в response
+
+  // Читаем тело ответа сервера и преобразуем JSON в JavaScript-объект
   const responseBody = await response.json()
+
+  // Получаем HTTP-статус ответа сервера, например 201
   const statusCode = response.status()
 
-  // Log the response status and body
+  // Выводим HTTP-статус ответа в консоль
   console.log('response status:', statusCode)
+
+  // Выводим тело ответа сервера в консоль
   console.log('response body:', responseBody)
+
+  // Проверяем, что сервер вернул статус 201 — продукт успешно создан
   expect(statusCode).toBe(StatusCodes.CREATED)
-  // check that body.name is string type
+
+  // Проверяем, что свойство name в ответе имеет тип string
   expect(typeof responseBody.name).toBe('string')
-  // check that body.price is number type
+
+  // Проверяем, что свойство price в ответе имеет тип number
   expect(typeof responseBody.price).toBe('number')
-  //expect
-})
+}) // Завершаем описание теста
 
 test('post product with correct mandatory data and quantity should receive code 201', async ({
   request,
